@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Train Scheduler</title>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="assets/css/style.css">
+</head>
+<body>
+	<div class="container">
+		<div class="jumbotron text-center">
+			<h1>Trains, Trains, and Trains</h1>
+			<p>Who wants to go on a trip?</p>
+		</div>
+		
+		<!-- Train Schedule panel contents -->
+		<div class="panel panel-primary">
+		  <div class="panel-heading">
+		  	<h3 class="panel-title">Current Train Schedule</h3>
+		  </div>
+		  <!-- Train Schedule Table -->
+		  <div class="table-responsive">
+			  <table class="table" id="employees">
+			    <tr>
+			    	<th>Train Name</th>
+			    	<th>Destination</th>
+			    	<th>Frequency (min)</th>
+			    	<th>Next Arrival</th>
+			    	<th>Minutes Away</th>
+			    </tr>
+			  </table>
+		  </div>	
+		</div>
+
+		<!-- Form panel -->
+		<div class="panel panel-primary">
+		  <div class="panel-heading">
+		    <h3 class="panel-title">Add Train</h3>
+		  </div>
+		  <div class="panel-body">
+		    <!-- Form -->
+		    <form>
+		    	<div class="form-group">
+					<label>Train Name</label>
+					<input type="text" name="name" class="form-control" id="name-input"><br>
+					<label>Destination</label>
+					<input type="text" name="destination" class="form-control" id="dest-input"><br>
+					<label>First Train Time (24 Hr - HH:MM)</label>
+					<input type="text" name="time" class="form-control" id="time-input"><br>
+					<label>Frequency (minutes)</label>
+					<input type="number" name="frequency" class="form-control" id="freq-input"><br>
+				</div>
+				<button type="submit" class="btn btn-primary" id="add-train">Submit</button>
+		    </form>
+		  </div>
+		</div>
+	</div><!-- ./container -->
+
+	<!-- Scripts -->
+	<!-- jQuery -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+	<script src="https://code.jquery.com/jquery.js"></script>
+	<!-- Moment.js -->
+  	<script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+  	<!-- Firebase -->
+	<script src="https://www.gstatic.com/firebasejs/4.3.0/firebase.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<script type="text/javascript" src="assets/javascript/app.js"></script>
+</body>
+</html>
