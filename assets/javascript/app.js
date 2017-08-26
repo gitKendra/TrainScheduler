@@ -25,9 +25,9 @@ $("#add-train").on("click", function(event) {
   // Local object for holding train data
   var newTrain = {
     name: trainName,
-    dest: trainDestination,
+    destination: trainDestination,
     startTime: trainStartTime,
-    freq: trainFrequency
+    frequency: trainFrequency
   }
 
   // Push train object to database
@@ -53,7 +53,7 @@ dataRef.ref().on("child_added", function(childSnapshot) {
     " </td><td> " + nextArrival +
     " </td><td> " + minutesAway + " </td></tr>");
 
-// Handle the errors
+// Handle any errors
 },  function(errorObject) {
       console.log("Errors handled: " + errorObject.code);
 });
