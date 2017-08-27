@@ -41,19 +41,30 @@ $("#add-train").on("click", function(event) {
  });
 
 // Firebase watcher + initial loader when a train is added
-dataRef.ref().on("child_added", function(childSnapshot) {
+dataRef.ref().on("child_added", function(childSnapshot, prevChildKey) {
   var m = moment(childSnapshot.val().startTime, "HH:mm");
   var minutesAway = childSnapshot.val().frequency - moment().diff(m, 'minutes') % childSnapshot.val().frequency;
   var nextArrival = moment().add(minutesAway, 'minute').format('hh:mm A');
 
   // Appends the full list of employees to the #employees panel to HTML
-  $("#employees").append("<tr><td> " + childSnapshot.val().name +
+  $("#employees > tbody").append("<tr id="+childSnapshot.key+"><td> " + childSnapshot.val().name +
     " </td><td> " + childSnapshot.val().destination +
     " </td><td> " + childSnapshot.val().frequency +
     " </td><td> " + nextArrival +
-    " </td><td> " + minutesAway + " </td></tr>");
+    " </td><td> " + minutesAway + " </td><td> " +
+    " <button type='sumbit' class='btn btn-primary btn-sm delete' value=" + childSnapshot.key +
+    " ><span class='glyphicon glyphicon-remove' aria-hidden='true'></span></button></td></tr>");
 
-// Handle any errors
-},  function(errorObject) {
-      console.log("Errors handled: " + errorObject.code);
+  // Handle any errors
+}, function(errorObject) {
+    console.log("Errors handled: " + errorObject.code);
 });
+
+// Remove train when user clicks delete button
+$(document).on("click", ".delete", function(){
+  var key = $(this).val();
+  // Delete row from HTML
+  $("#"+key).remove();
+  // Delete database object
+  dataRef.ref(key).remove()
+})
