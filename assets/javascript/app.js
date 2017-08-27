@@ -46,12 +46,14 @@ dataRef.ref().on("child_added", function(childSnapshot, prevChildKey) {
   var minutesAway = childSnapshot.val().frequency - moment().diff(m, 'minutes') % childSnapshot.val().frequency;
   var nextArrival = moment().add(minutesAway, 'minute').format('hh:mm A');
 
-  // Appends the full list of employees to the #employees panel to HTML
+  // Appends the full list of trains to the table panel in HTML
   $("#employees > tbody").append("<tr id="+childSnapshot.key+"><td> " + childSnapshot.val().name +
     " </td><td> " + childSnapshot.val().destination +
     " </td><td> " + childSnapshot.val().frequency +
     " </td><td> " + nextArrival +
     " </td><td> " + minutesAway + " </td><td> " +
+    " <button type='sumbit' class='btn btn-primary btn-sm change' value=" + childSnapshot.key +
+    " ><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span></button> " +
     " <button type='sumbit' class='btn btn-primary btn-sm delete' value=" + childSnapshot.key +
     " ><span class='glyphicon glyphicon-remove' aria-hidden='true'></span></button></td></tr>");
 
@@ -62,9 +64,40 @@ dataRef.ref().on("child_added", function(childSnapshot, prevChildKey) {
 
 // Remove train when user clicks delete button
 $(document).on("click", ".delete", function(){
+  console.log("delete train");
   var key = $(this).val();
   // Delete row from HTML
   $("#"+key).remove();
   // Delete database object
   dataRef.ref(key).remove()
 })
+
+// Update train when user clicks delete button
+$(document).on("click", ".change", function(){
+  console.log("update train");
+  var key = $(this).val();
+  // // Update row from HTML
+  // $("#"+key).update();
+  // Delete database object
+  dataRef.ref(key).update()
+})
+// Firebase watcher + initial loader when a train is changed
+dataRef.ref().on("child_changed", function(childSnapshot, prevChildKey) {
+  var m = moment(childSnapshot.val().startTime, "HH:mm");
+  var minutesAway = childSnapshot.val().frequency - moment().diff(m, 'minutes') % childSnapshot.val().frequency;
+  var nextArrival = moment().add(minutesAway, 'minute').format('hh:mm A');
+
+  // Changes the HTML of the train
+  $("#"+hildSnapshot.key).html("<tr id="+childSnapshot.key+"><td> " + childSnapshot.val().name +
+    " </td><td> " + childSnapshot.val().destination +
+    " </td><td> " + childSnapshot.val().frequency +
+    " </td><td> " + nextArrival +
+    " </td><td> " + minutesAway + " </td><td> " +
+    " <button type='sumbit' class='btn btn-primary btn-sm change' value=" + childSnapshot.key +
+    " ><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span></button> " +
+    " <button type='sumbit' class='btn btn-primary btn-sm delete' value=" + childSnapshot.key +
+    " ><span class='glyphicon glyphicon-remove' aria-hidden='true'></span></button></td></tr>");
+    // Handle any errors
+}, function(errorObject) {
+    console.log("Errors handled: " + errorObject.code);
+});
