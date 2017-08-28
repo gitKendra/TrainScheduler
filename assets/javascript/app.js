@@ -126,3 +126,97 @@ function calcMinAway(firstTrainTime, frequency) {
     return frequency - Math.abs(totalMinutesAway) % frequency;
   }
 }
+
+
+//** Authentication **\\
+
+// Github Authentication
+var providerGithub = new firebase.auth.GoogleAuthProvider();
+
+function githubSignin() {
+  firebase.auth().signInWithPopup(providerGithub).then(function(result) {
+    // This gives you a GitHub Access Token. You can use it to access the GitHub API.
+    var token = result.credential.accessToken;
+    // The signed-in user info.
+    var user = result.user;
+
+    // hide all sign-in buttons and show sign-out button
+    $("#github-login").attr("style", "display:none");
+    $("#google-login").attr("style", "display:none");
+    $("#github-logout").removeAttr("style");
+
+    console.log(token)
+    console.log(user)
+  }).catch(function(error) {
+    // Handle Errors here.
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    // The email of the user's account used.
+    var email = error.email;
+    // The firebase.auth.AuthCredential type that was used.
+    var credential = error.credential;
+
+    console.log(error.code)
+    console.log(error.message)
+  });
+}
+
+function githubSignout(){
+   firebase.auth().signOut()
+   
+   .then(function() {
+      // hide sign-out button and show sign-in buttons
+      $("#github-logout").attr("style", "display:none");
+      $("#github-login").removeAttr("style");
+      $("#google-login").removeAttr("style");
+
+      console.log('Signout successful!')
+   }, function(error) {
+      console.log('Signout failed')
+   });
+}
+
+
+// Google Authentication
+var providerGoogle = new firebase.auth.GoogleAuthProvider();
+
+function googleSignin() {
+   firebase.auth().signInWithPopup(providerGoogle).then(function(result) {
+      // This gives you a Google Access Token. You can use it to access the Google API.
+      var token = result.credential.accessToken;
+      // The signed-in user info.
+      var user = result.user;
+    
+      // hide all sign-in buttons and show sign-out button
+      $("#google-login").attr("style", "display:none");
+      $("#github-login").attr("style", "display:none");
+      $("#google-logout").removeAttr("style");
+
+      console.log(token)
+      console.log(user)
+   }).catch(function(error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // The email of the user's account used.
+      var email = error.email;
+      // The firebase.auth.AuthCredential type that was used.
+      var credential = error.credential;  
+      console.log(error.code)
+      console.log(error.message)
+   });
+}
+
+function googleSignout() {
+   firebase.auth().signOut()
+  
+   .then(function() {
+      // hide sign-out button and show sign-in buttons
+      $("#google-logout").attr("style", "display:none");
+      $("#google-login").removeAttr("style");
+      $("#github-login").removeAttr("style");
+      console.log('Signout Succesfull')
+   }, function(error) {
+      console.log('Signout Failed')  
+   });
+}
