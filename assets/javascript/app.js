@@ -11,7 +11,7 @@ firebase.initializeApp(config);
 
 var dataRef = firebase.database();
 
-// Button for adding a new train
+// Event handler when clicking button to add a new train
 $("#add-train").on("click", function(event) {
   // prevent form from submitting
   event.preventDefault();
@@ -41,18 +41,21 @@ $("#add-train").on("click", function(event) {
  });
 
 // Firebase watcher + initial loader when a train is added
-dataRef.ref().on("child_added", function(childSnapshot, prevChildKey) {
-  var m = moment(childSnapshot.val().startTime, "HH:mm");
-  var minutesAway = childSnapshot.val().frequency - moment().diff(m, 'minutes') % childSnapshot.val().frequency;
-  var nextArrival = moment().add(minutesAway, 'minute').format('hh:mm A');
+dataRef.ref().on("child_added", function(childSnapshot) {
+  
+  // Calculate how long until next train and the time of arrival based on start time and frequency
+  var minutesAway = calcMinAway(moment(childSnapshot.val().startTime, "HH:mm"), childSnapshot.val().frequency);
+  var nextArrival = moment().add(minutesAway, 'minute');
+console.log("minutes until next train: "+ minutesAway);
+console.log("next train: " + nextArrival.format('hh:mm A'));
 
   // Appends the full list of trains to the table panel in HTML
-  $("#employees > tbody").append("<tr id="+childSnapshot.key+"><td> " + childSnapshot.val().name +
-    " </td><td> " + childSnapshot.val().destination +
-    " </td><td> " + childSnapshot.val().frequency +
-    " </td><td> " + nextArrival +
+  $("#employees > tbody").append("<tr id="+childSnapshot.key+"><td contenteditable> " + childSnapshot.val().name +
+    " </td><td contenteditable> " + childSnapshot.val().destination +
+    " </td><td contenteditable> " + childSnapshot.val().frequency +
+    " </td><td> " + nextArrival.format('hh:mm A') +
     " </td><td> " + minutesAway + " </td><td> " +
-    " <button type='sumbit' class='btn btn-primary btn-sm change' value=" + childSnapshot.key +
+    " <button type='sumbit' class='btn btn-primary btn-sm edit' value=" + childSnapshot.key +
     " ><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span></button> " +
     " <button type='sumbit' class='btn btn-primary btn-sm delete' value=" + childSnapshot.key +
     " ><span class='glyphicon glyphicon-remove' aria-hidden='true'></span></button></td></tr>");
@@ -64,40 +67,62 @@ dataRef.ref().on("child_added", function(childSnapshot, prevChildKey) {
 
 // Remove train when user clicks delete button
 $(document).on("click", ".delete", function(){
-  console.log("delete train");
   var key = $(this).val();
   // Delete row from HTML
   $("#"+key).remove();
-  // Delete database object
+  // Remove values from database
   dataRef.ref(key).remove()
 })
 
-// Update train when user clicks delete button
-$(document).on("click", ".change", function(){
-  console.log("update train");
+// Update train details whenever a user clicks the edit button
+$(document).on("click", ".edit", function(){
   var key = $(this).val();
-  // // Update row from HTML
-  // $("#"+key).update();
-  // Delete database object
-  dataRef.ref(key).update()
-})
-// Firebase watcher + initial loader when a train is changed
-dataRef.ref().on("child_changed", function(childSnapshot, prevChildKey) {
-  var m = moment(childSnapshot.val().startTime, "HH:mm");
-  var minutesAway = childSnapshot.val().frequency - moment().diff(m, 'minutes') % childSnapshot.val().frequency;
-  var nextArrival = moment().add(minutesAway, 'minute').format('hh:mm A');
 
-  // Changes the HTML of the train
-  $("#"+hildSnapshot.key).html("<tr id="+childSnapshot.key+"><td> " + childSnapshot.val().name +
-    " </td><td> " + childSnapshot.val().destination +
-    " </td><td> " + childSnapshot.val().frequency +
-    " </td><td> " + nextArrival +
-    " </td><td> " + minutesAway + " </td><td> " +
-    " <button type='sumbit' class='btn btn-primary btn-sm change' value=" + childSnapshot.key +
-    " ><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span></button> " +
-    " <button type='sumbit' class='btn btn-primary btn-sm delete' value=" + childSnapshot.key +
-    " ><span class='glyphicon glyphicon-remove' aria-hidden='true'></span></button></td></tr>");
+  // Retrieve values from table cells
+  trainName = $("#"+key).find("td:nth-child(1)").text();
+  trainDestination = $("#"+key).find("td:nth-child(2)").text();
+  trainFrequency = $("#"+key).find("td:nth-child(3)").text();
+
+  // Update database with new values
+  dataRef.ref(key).update({
+    name: trainName,
+    destination: trainDestination,
+    frequency: trainFrequency
+  });
+});
+
+// Firebase watcher triggered when a train frequency is changed
+dataRef.ref().on("child_changed", function(childSnapshot, prevChildKey) {
+
+  // Calculate how long until next train and the time of arrival based on start time and frequency
+  var minutesAway = calcMinAway(moment(childSnapshot.val().startTime, "HH:mm"), childSnapshot.val().frequency);
+  var nextArrival = moment().add(minutesAway, 'minute');
+
+  // update time for next arrival
+  $("#"+childSnapshot.key).find("td:nth-child(4)").text(nextArrival.format('hh:mm A'));
+  // update time for minutes away
+  $("#"+childSnapshot.key).find("td:nth-child(5)").text(minutesAway);
+
     // Handle any errors
 }, function(errorObject) {
     console.log("Errors handled: " + errorObject.code);
 });
+
+// Function takes in the first starting train time and it's frequency
+// Returns the number of minutes until the next train arrives
+function calcMinAway(firstTrainTime, frequency) {
+  var totalMinutesAway = firstTrainTime.diff(moment(), 'minute');
+  
+  // Waiting for the first train to arrive
+  if (totalMinutesAway > 0) {
+    return totalMinutesAway + 1;
+  }
+  // Train is here right now
+  else if (totalMinutesAway == 0) {
+    return totalMinutesAway;
+  }
+  // Waiting for the next train to come
+  else {
+    return frequency - Math.abs(totalMinutesAway) % frequency;
+  }
+}
