@@ -46,8 +46,6 @@ dataRef.ref().on("child_added", function(childSnapshot) {
   // Calculate how long until next train and the time of arrival based on start time and frequency
   var minutesAway = calcMinAway(moment(childSnapshot.val().startTime, "HH:mm"), childSnapshot.val().frequency);
   var nextArrival = moment().add(minutesAway, 'minute');
-console.log("minutes until next train: "+ minutesAway);
-console.log("next train: " + nextArrival.format('hh:mm A'));
 
   // Appends the full list of trains to the table panel in HTML
   $("#employees > tbody").append("<tr id="+childSnapshot.key+"><td contenteditable> " + childSnapshot.val().name +
@@ -56,9 +54,9 @@ console.log("next train: " + nextArrival.format('hh:mm A'));
     " </td><td> " + nextArrival.format('hh:mm A') +
     " </td><td> " + minutesAway + " </td><td> " +
     " <button type='sumbit' class='btn btn-primary btn-sm edit' value=" + childSnapshot.key +
-    " ><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span></button> " +
+    " ><span class='glyphicon glyphicon-ok' aria-hidden='true'></span></button> " +
     " <button type='sumbit' class='btn btn-primary btn-sm delete' value=" + childSnapshot.key +
-    " ><span class='glyphicon glyphicon-remove' aria-hidden='true'></span></button></td></tr>");
+    " ><span class='glyphicon glyphicon-trash' aria-hidden='true'></span></button></td></tr>");
 
   // Handle any errors
 }, function(errorObject) {

@@ -11,11 +11,15 @@
 	<link rel="stylesheet" type="text/css" href="assets/css/style.css">
 </head>
 <body>
-	<button id="github-login" onclick = "githubSignin()">Github Signin</button>
-	<button id="github-logout" onclick = "githubSignout()" style="display:none">Github Signout</button>
-	<button id="google-login" onclick = "googleSignin()">Google Signin</button>
-	<button id="google-logout" onclick = "googleSignout()" style="display:none">Google Signout</button>
+
 	<div class="container">
+		<div class="auth-btns">
+			<button id="github-login" class="btn btn-default auth" onclick = "githubSignin()"><img src="assets/images/github-icon-20x20.png"> Sign-in</button>
+			<button id="github-logout" class="btn btn-default auth" onclick = "githubSignout()" style="display:none"><img src="assets/images/github-icon-20x20.png"> Signout</button>
+			<button id="google-login" class="btn btn-default auth" onclick = "googleSignin()"><img src="assets/images/google-icon-20x20.png"> Sign-in</button>
+			<button id="google-logout" class="btn btn-default auth" onclick = "googleSignout()" style="display:none"><img src="assets/images/google-icon-20x20.png"> Signout</button>
+		</div>
+
 		<div class="jumbotron text-center">
 			<h1>Trains, Trains, and Trains</h1>
 			<p>Who wants to go on a trip?</p>
