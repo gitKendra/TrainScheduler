@@ -127,7 +127,7 @@ function calcMinAway(firstTrainTime, frequency) {
     return frequency - Math.abs(totalMinutesAway) % frequency;
   }
 }
-}}
+}});
 
 //** Authentication **\\
 
