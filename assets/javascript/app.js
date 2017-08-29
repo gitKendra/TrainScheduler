@@ -11,6 +11,9 @@ firebase.initializeApp(config);
 
 var dataRef = firebase.database();
 
+firebase.auth().onAuthStateChanged(function(user){
+  console.log(user);
+  if(user){
 // Event handler when clicking button to add a new train
 $("#add-train").on("click", function(event) {
   // prevent form from submitting
@@ -124,12 +127,12 @@ function calcMinAway(firstTrainTime, frequency) {
     return frequency - Math.abs(totalMinutesAway) % frequency;
   }
 }
-
+}}
 
 //** Authentication **\\
 
 // Github Authentication
-var providerGithub = new firebase.auth.GoogleAuthProvider();
+var providerGithub = new firebase.auth.GithubAuthProvider();
 
 function githubSignin() {
   firebase.auth().signInWithPopup(providerGithub).then(function(result) {
@@ -139,9 +142,9 @@ function githubSignin() {
     var user = result.user;
 
     // hide all sign-in buttons and show sign-out button
-    $("#github-login").attr("style", "display:none");
-    $("#google-login").attr("style", "display:none");
-    $("#github-logout").removeAttr("style");
+    // $("#github-login").attr("style", "display:none");
+    // $("#google-login").attr("style", "display:none");
+    // $("#github-logout").removeAttr("style");
 
     console.log(token)
     console.log(user)
@@ -164,9 +167,9 @@ function githubSignout(){
    
    .then(function() {
       // hide sign-out button and show sign-in buttons
-      $("#github-logout").attr("style", "display:none");
-      $("#github-login").removeAttr("style");
-      $("#google-login").removeAttr("style");
+      // $("#github-logout").attr("style", "display:none");
+      // $("#github-login").removeAttr("style");
+      // $("#google-login").removeAttr("style");
 
       console.log('Signout successful!')
    }, function(error) {
@@ -186,9 +189,9 @@ function googleSignin() {
       var user = result.user;
     
       // hide all sign-in buttons and show sign-out button
-      $("#google-login").attr("style", "display:none");
-      $("#github-login").attr("style", "display:none");
-      $("#google-logout").removeAttr("style");
+      // $("#google-login").attr("style", "display:none");
+      // $("#github-login").attr("style", "display:none");
+      // $("#google-logout").removeAttr("style");
 
       console.log(token)
       console.log(user)
@@ -210,9 +213,9 @@ function googleSignout() {
   
    .then(function() {
       // hide sign-out button and show sign-in buttons
-      $("#google-logout").attr("style", "display:none");
-      $("#google-login").removeAttr("style");
-      $("#github-login").removeAttr("style");
+      // $("#google-logout").attr("style", "display:none");
+      // $("#google-login").removeAttr("style");
+      // $("#github-login").removeAttr("style");
       console.log('Signout Succesfull')
    }, function(error) {
       console.log('Signout Failed')  
